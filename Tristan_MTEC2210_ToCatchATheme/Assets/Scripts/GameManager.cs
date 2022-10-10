@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEditor;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class GameManager : MonoBehaviour
  
     public int score;
 
-    private AudioSource audioSource;
 
     private float spawnDelay = 1;
     private float spawnRate = 2;
@@ -24,7 +24,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         
         InvokeRepeating(nameof(SpawnItem), spawnDelay, spawnRate);
 
@@ -55,21 +54,31 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void PlaySound(AudioClip audioClip) 
-    {
-        audioSource.PlayOneShot(audioClip);
-    }
+   
 
-    public static IEnumerator FadeInOut(AudioSource audioSource, float durationIn, float durationHold, float durationOut, float targetVolume)
+    public static IEnumerator FadeInOut(AudioSource audioSource, float duration, float maxVolume)
     {
+        float randomStartTime = Random.Range(0, audioSource.clip.length - duration - 1);
+        audioSource.time = randomStartTime;
+        Debug.Log(audioSource.time);
+        audioSource.Play();
+        audioSource.volume = 0f;
         float currentTime = 0;
-        float start = audioSource.volume;
         while (currentTime < duration)
         {
             currentTime += Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            float progress = currentTime/duration;
+            progress = Mathf.Lerp(0, Mathf.PI, progress);
+            progress = Mathf.Sin(progress);
+
+            audioSource.volume = Mathf.Clamp(progress, 0, maxVolume);
+            Debug.Log(audioSource.volume);
+
+
+
             yield return null;
         }
+        audioSource.Stop();
         yield break;
     }
 

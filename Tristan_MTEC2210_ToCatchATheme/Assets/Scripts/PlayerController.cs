@@ -8,8 +8,8 @@ public class PlayerController : MonoBehaviour
 {
 
     public GameManager gameManager;
-    public AudioClip coinAudio;
-    public AudioClip hazardAudio;
+    public AudioSource coinAudio;
+    public AudioSource hazardAudio;
 
     public float speed;
 
@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
         //move the player object
         transform.Translate(xMove * speed * Time.deltaTime, 0, 0);
     }
+    
 
     private void OnTriggerEnter2D(Collider2D other) {
         
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
 
             
             gameManager.IncrementScore(1);
+            StartCoroutine(GameManager.FadeInOut(coinAudio, 4, 1f));
             Destroy(other.gameObject);
             
         }
