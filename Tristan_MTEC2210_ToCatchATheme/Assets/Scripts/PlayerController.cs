@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
 {
 
     public GameManager gameManager;
+    public AudioClip coinAudio;
+    public AudioClip hazardAudio;
+
     public float speed;
 
 

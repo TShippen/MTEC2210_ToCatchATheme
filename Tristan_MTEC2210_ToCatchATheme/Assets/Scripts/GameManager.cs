@@ -15,13 +15,16 @@ public class GameManager : MonoBehaviour
  
     public int score;
 
-    private float spawnDelay = 0;
+    private AudioSource audioSource;
+
+    private float spawnDelay = 1;
     private float spawnRate = 2;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         
         InvokeRepeating(nameof(SpawnItem), spawnDelay, spawnRate);
 
@@ -50,4 +53,24 @@ public class GameManager : MonoBehaviour
     {
         score += value;
     }
+
+
+    public void PlaySound(AudioClip audioClip) 
+    {
+        audioSource.PlayOneShot(audioClip);
+    }
+
+    public static IEnumerator FadeInOut(AudioSource audioSource, float durationIn, float durationHold, float durationOut, float targetVolume)
+    {
+        float currentTime = 0;
+        float start = audioSource.volume;
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            yield return null;
+        }
+        yield break;
+    }
+
 }
