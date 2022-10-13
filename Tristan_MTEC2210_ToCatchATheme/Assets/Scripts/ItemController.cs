@@ -25,6 +25,9 @@ public class ItemController : MonoBehaviour
     // sound played when hazard is collected
     public AudioSource hazardAudio;
 
+    // sound played when hazard is collected, layered
+    public AudioSource gameOverSound;
+
 
     // Start is called before the first frame update
     void Start()
@@ -144,6 +147,7 @@ public class ItemController : MonoBehaviour
         if (tag == "Hazard" && other.gameObject.tag == "Player") 
         {
             other.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            gameOverSound.Play();
             StartCoroutine(FadeAndDestroy(hazardAudio, 5f, .3f));
 
 
