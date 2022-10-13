@@ -8,17 +8,20 @@ public class PlayerController : MonoBehaviour
 {
 
     public GameManager gameManager;
-    public AudioSource coinAudio;
-    public AudioSource hazardAudio;
+
+    public Animator playerAnimator;
 
     public float speed;
 
+    
 
     // Start is called before the first frame update
     void Start()
     {
         // set player object speed
         speed = 6;
+
+        
     }
 
     // Update is called once per frame
@@ -26,29 +29,34 @@ public class PlayerController : MonoBehaviour
     {
         // get keyboard input
         float xMove =  Input.GetAxisRaw("Horizontal");
-
+        
         //move the player object
         transform.Translate(xMove * speed * Time.deltaTime, 0, 0);
+
+        // update player animation
+        playerAnimator.SetFloat("playerSpeed", xMove);
     }
     
 
     private void OnTriggerEnter2D(Collider2D other) {
         
-        // Destory the coin items if it colides with the player
+        // increment the score if the player colides with a coin
         if (other.gameObject.tag == "Coin") {
 
-            
             gameManager.IncrementScore(1);
-            StartCoroutine(GameManager.FadeInOut(coinAudio, 4, 1f));
-            Destroy(other.gameObject);
+            playerAnimator.SetBool("collectedCoin", true);
+            StartCoroutine(StartAnimationWaitFinish(playerAnimator, "Player_collect_coin", "collectedCoin"));
             
         }
-        
-        // Destory the player if it colides with an enemy
-        if (other.gameObject.tag == "Hazard") {
+                
+    }
 
-            Destroy(gameObject);
-        }
+    private IEnumerator StartAnimationWaitFinish(Animator animator, string animationName, string transitionParameterName) 
+    {
+        animator.Play(animationName);
+        float animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSecondsRealtime(animationLength);
+        animator.SetBool("collectedCoin", false);
         
     }
 }

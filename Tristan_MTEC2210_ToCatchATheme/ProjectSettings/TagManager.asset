@@ -8,6 +8,7 @@ TagManager:
   - Coin
   - Hazard
   - Background
+  - Theme
   layers:
   - Default
   - TransparentFX
