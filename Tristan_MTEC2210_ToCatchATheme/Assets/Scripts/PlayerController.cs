@@ -11,7 +11,17 @@ public class PlayerController : MonoBehaviour
 
     public Animator playerAnimator;
 
+    private Rigidbody2D rigidbody2D;
+
     public float speed;
+
+    public float jumpSpeed;
+
+    private float jumpOrigin;
+    
+    private bool jumping = false;
+
+
 
     
 
@@ -19,7 +29,15 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // set player object speed
-        speed = 6;
+        speed = 200;
+
+        jumpSpeed = 5;
+
+        // get player object ridgedbody2D component
+        rigidbody2D = GetComponent<Rigidbody2D>();
+
+        jumpOrigin = transform.position.y;
+
 
         
     }
@@ -27,14 +45,53 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // movement code that uses GetAxis
+        /*
         // get keyboard input
         float xMove =  Input.GetAxisRaw("Horizontal");
         
         //move the player object
         transform.Translate(xMove * speed * Time.deltaTime, 0, 0);
+        */
 
-        // update player animation
-        playerAnimator.SetFloat("playerSpeed", xMove);
+        if (Input.GetKeyDown(KeyCode.Space) && jumpOrigin > transform.position.y)
+        {
+            jumping = true;
+        }
+
+        
+
+
+        
+    }
+
+    void FixedUpdate()
+    {
+        // move character to the left
+        if (Input.GetKey(KeyCode.A))
+        {
+            rigidbody2D.velocity = new Vector2(-speed * Time.deltaTime, rigidbody2D.velocity.y);
+            
+            // update player animation
+            playerAnimator.SetFloat("playerSpeed", -1);
+        }
+
+        // move character to the left
+        if (Input.GetKey(KeyCode.D))
+        {
+            rigidbody2D.velocity = new Vector2(speed * Time.deltaTime, rigidbody2D.velocity.y);
+            
+            // update player animation
+            playerAnimator.SetFloat("playerSpeed", 1);
+        }
+
+        if (jumping == true) 
+        {
+            rigidbody2D.velocity = Vector2.up * jumpSpeed;
+            jumping = false;
+        }
+
+
     }
     
 
